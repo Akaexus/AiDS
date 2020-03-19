@@ -1,7 +1,8 @@
 # coding: utf8
-from sorting.sorter import Sorter
-from sorting.generator import Generator
-from sorting.sorter import Sorter
+from sorter import Sorter
+from generator import Generator
+from sorter import Sorter, Statistics
+import time
 
 
 class SortingMachine:
@@ -45,23 +46,33 @@ class SortingMachine:
         print('Please enter numbers:')
         user_array = self.input_array()
         for algorithm_name in available_algorithms:
+            array = user_array[:]
             print('\nSorting array using {}'.format(algorithm_name))
+            print('INPUT: ', user_array)
             f = getattr(Sorter, algorithm_name)
-            print(f(user_array, verbose=True))
+
+            Statistics.reset()
+
+            start_time = time.time()
+            print('OUTPUT: ', f(array, verbose=True))
+            elapsed_time = round(time.time() - start_time, 3)
+            statistics = Statistics.report()
+            print('Elapsed time: {}s\nComparisons: {}\nSwaps: {}\n'.format(elapsed_time, statistics['comparisons'], statistics['swaps']))
 
     # UTILITIES
+
+    def is_int(self, string):
+        string = list(string)
+        for index, char in enumerate(string):
+            if not char.isdigit() and ((index != 0) or (index == 0 and char != '-')):
+                    return False
+        return True
 
     def input_array(self):
         import re
         user_input = input().replace(',', ' ').replace('\n', ' ')
         user_input = re.sub(r' {2,}', ' ', user_input)
-        def is_int(string):
-            string = list(string)
-            for index, char in enumerate(string):
-                if not char.isdigit() and (index == 0 and char != '-'):
-                    return False
-            return True
-        return list(map(int, filter(is_int, user_input.split())))
+        return list(map(int, filter(self.is_int, user_input.split())))
 
     def menu_input(self, entries, allow_done=False):
         while True:

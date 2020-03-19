@@ -48,7 +48,7 @@ for round in range(0, ROUNDS):
                     if size not in results[algorithm_name][array_type]:
                         results[algorithm_name][array_type] = {
                             'time': [],
-                            'comparsions': [],
+                            'comparisons': [],
                             'swaps': []
                         }
                     f = algorithms[algorithm_name]
