@@ -30,7 +30,8 @@ class Verbose:
 
     @staticmethod
     def print(*string):
-        print(*string)
+        if Verbose.enabled:
+            print(*string)
 
 
 
@@ -73,7 +74,7 @@ class Sorter:
         return final_array
 
     @staticmethod
-    def heap_sort(array, verbose=False, debug=False):
+    def heap_sort(array):
         def fix_tree(tree, n):
             Statistics.add_comparisons(n)  # debug
             for i in range(1, n + 1)[::-1]:

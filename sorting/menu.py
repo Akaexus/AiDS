@@ -1,8 +1,9 @@
 # coding: utf8
 from sorter import Sorter
 from generator import Generator
-from sorter import Sorter, Statistics
+from sorter import Sorter, Statistics, Verbose
 import time
+import random
 
 
 class SortingMachine:
@@ -21,7 +22,7 @@ class SortingMachine:
             },
             {
                 'name': 'Sort generated numbers',
-                'fn': lambda: print('plik')
+                'fn': self.generated_input
             },
             {
                 'name': 'Benchmark',
@@ -45,6 +46,7 @@ class SortingMachine:
         available_algorithms = self.algorithm_picker()
         print('Please enter numbers:')
         user_array = self.input_array()
+        Verbose.enabled = True
         for algorithm_name in available_algorithms:
             array = user_array[:]
             print('\nSorting array using {}'.format(algorithm_name))
@@ -58,6 +60,42 @@ class SortingMachine:
             elapsed_time = round(time.time() - start_time, 3)
             statistics = Statistics.report()
             print('Elapsed time: {}s\nComparisons: {}\nSwaps: {}\n'.format(elapsed_time, statistics['comparisons'], statistics['swaps']))
+        Verbose.enabled = False
+
+    def generated_input(self):
+        results = {}
+        available_algorithms = self.algorithm_picker()
+        available_array_types = self.array_type_picker()
+        print('Array size:')
+        while True:
+            print('> ', end='')
+            size = input()
+            if size.isdigit():
+                break
+
+        for array_type in available_array_types:
+            print('\nTesting {} array of size {}'.format(array_type, size))
+            generator = getattr(Generator, array_type)
+            array_to_sort = generator(int(size))
+            for algorithm in available_algorithms:
+                array = array_to_sort[:]
+                f = getattr(Sorter, algorithm)
+
+                Statistics.reset()
+                start_time = time.time()
+                f(array)
+                elapsed_time = time.time() - start_time
+                report = Statistics.report()
+                print('Sorted {} elemet array using {} in {}s with {} comparisons and {} swaps!'.format(
+                    size,
+                    algorithm,
+                    round(elapsed_time, 3),
+                    report['comparisons'],
+                    report['swaps']
+                ))
+
+
+
 
     # UTILITIES
 
@@ -90,7 +128,7 @@ class SortingMachine:
         print('Select entry, choose number to (di)select or type \'done\':')
 
         while True:
-            for i in range(len(self.algorithm_names)):
+            for i in range(len(entries)):
                 print('[{}]\t[{}] {}'.format(i+1, 'X' if select_options[entries[i]] else ' ', entries[i]))
 
             choice = self.menu_input(entries, allow_done=True)
