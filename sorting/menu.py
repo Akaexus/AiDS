@@ -4,9 +4,14 @@ from generator import Generator
 from sorter import Sorter, Statistics, Verbose
 import time
 import random
+import json
 
 
 class SortingMachine:
+    powers = [1, 2, 3, 4, 5]  # 10**x
+    multipliers = [1, 2, 3, 4, 5, 7]
+    ROUNDS = 15
+
     algorithm_names = Sorter.algorithm_names
     array_types = Generator.array_types
 
@@ -26,7 +31,7 @@ class SortingMachine:
             },
             {
                 'name': 'Benchmark',
-                'fn': lambda: print('benchmark')
+                'fn': self.benchmark
             },
             {
                 'name': 'Quit',
@@ -93,6 +98,47 @@ class SortingMachine:
                     report['comparisons'],
                     report['swaps']
                 ))
+
+    def benchmark(self):
+        results = {}
+        available_algorithms = self.algorithm_picker()
+        available_array_types = self.array_type_picker()
+        for round_number in range(self.ROUNDS):
+            for power in self.powers:
+                for multiplier in self.multipliers:
+                    size = multiplier * 10 ** power
+                    for array_type in available_array_types:
+                        print('[#{}] Benchmarking {} array of size {}'.format(
+                            round_number,
+                            array_type,
+                            size
+                        ))
+                        generator = getattr(Generator, array_type)
+                        array_to_sort = generator(size)
+                        for algorithm in available_algorithms:
+                            print('  {}'.format(algorithm), end='')
+                            if algorithm not in results:
+                                results[algorithm] = {}
+                            if round_number == 0:
+                                results[algorithm][size] = {
+                                    'comparisons': [],
+                                    'swaps': [],
+                                    'time': [],
+                                }
+                            Statistics.reset()
+                            f = getattr(Sorter, algorithm)
+                            start_time = time.time()
+                            f(array_to_sort)
+                            elapsed_time = round(time.time() - start_time, 3)
+                            print(' - {}s'.format(elapsed_time))
+                            report = Statistics.report()
+                            results[algorithm][size]['comparisons'].append(report['comparisons'])
+                            results[algorithm][size]['swaps'].append(report['swaps'])
+                            results[algorithm][size]['time'].append(round(elapsed_time, 3))
+        json_results = json.dumps(results)
+        with open('sorting.json', 'w') as f:
+            f.write(json_results)
+
 
 
 
