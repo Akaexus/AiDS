@@ -23,7 +23,7 @@ class SortingMachine:
             },
             {
                 'name': 'Sort numbers from file',
-                'fn': lambda: print('plik')
+                'fn': self.file_input
             },
             {
                 'name': 'Sort generated numbers',
@@ -61,11 +61,40 @@ class SortingMachine:
             Statistics.reset()
 
             start_time = time.time()
-            print('OUTPUT: ', f(array, verbose=True))
+            print('OUTPUT: ', f(array))
             elapsed_time = round(time.time() - start_time, 3)
             statistics = Statistics.report()
             print('Elapsed time: {}s\nComparisons: {}\nSwaps: {}\n'.format(elapsed_time, statistics['comparisons'], statistics['swaps']))
         Verbose.enabled = False
+
+    def file_input(self):
+
+        import os
+
+        available_algorithms = self.algorithm_picker()
+        while True:
+            print('Please enter path to file:')
+            path = input()
+            if os.path.exists(path):
+                break
+        with open(path, 'r') as f:
+            user_array = self.input_array(f)
+        Verbose.enabled = True
+        for algorithm_name in available_algorithms:
+            array = user_array[:]
+            print('\nSorting array using {}'.format(algorithm_name))
+            print('INPUT: ', user_array)
+            f = getattr(Sorter, algorithm_name)
+
+            Statistics.reset()
+
+            start_time = time.time()
+            print('OUTPUT: ', f(array))
+            elapsed_time = round(time.time() - start_time, 3)
+            statistics = Statistics.report()
+            print('Elapsed time: {}s\nComparisons: {}\nSwaps: {}\n'.format(elapsed_time, statistics['comparisons'],
+                                                                           statistics['swaps']))
+            Verbose.enabled = False
 
     def generated_input(self):
         results = {}
@@ -152,9 +181,13 @@ class SortingMachine:
                     return False
         return True
 
-    def input_array(self):
+    def input_array(self, file=False):
         import re
-        user_input = input().replace(',', ' ').replace('\n', ' ')
+        if not file:
+            user_input = input()
+        else:
+            user_input = file.read()
+        user_input = user_input.replace(',', ' ').replace('\n', ' ')
         user_input = re.sub(r' {2,}', ' ', user_input)
         return list(map(int, filter(self.is_int, user_input.split())))
 

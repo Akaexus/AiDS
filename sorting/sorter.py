@@ -47,7 +47,7 @@ class Sorter:
     ]
 
     @staticmethod
-    def counting_sort(array, verbose=False, debug=False):
+    def counting_sort(array):
         array_size = len(array)
         max_element = array[0]
 
@@ -92,7 +92,7 @@ class Sorter:
         return array
 
     @staticmethod
-    def insertion_sort(array, verbose=False, debug=False):
+    def insertion_sort(array):
         for pivot in range(0, len(array)):
             for i in range(0, pivot)[::-1]:
                 Statistics.add_comparisons()  # debug
@@ -104,7 +104,7 @@ class Sorter:
         return array
 
     @staticmethod
-    def merge_sort(array, verbose=False, debug=False):
+    def merge_sort(array):
         def divide(array, start, end):
             if end - start <= 1:
                 Statistics.add_comparisons()  # debug
@@ -139,45 +139,45 @@ class Sorter:
         return array
 
     @staticmethod
-    def quick_sort(array, verbose=False, debug=False):
-        def quicc(array, start, end):
-            Statistics.add_comparisons()  # debug
-            if end - start < 2:
-                if end - start == 1 and array[start] < array[start + 1]:
-                    array[start], array[start + 1] = array[start + 1], array[start]
-                return array
-            else:
-                pivot_index = start + int((end - start) / 2)
-                Verbose.print('  Array', array[start:end+1], ', pivot array[{}] = {}'.format(pivot_index, array[pivot_index]))
-                array[pivot_index], array[end] = array[end], array[pivot_index]
-                Statistics.add_swaps()  # debug
-
-                i = start
-                j = end - 1
-                while True:
-                    while i < j and array[i] >= array[end]:
-                        Statistics.add_comparisons()  # debug
-                        i += 1
-                    while i < j and array[j] < array[end]:
-                        Statistics.add_comparisons()  # debug
-                        j -= 1
+    def quick_sort(array):
+        def quicc(a, start, end):
+            if end - start <= 1:
+                Statistics.add_comparisons()  # debug
+                if end - start == 1 and a[start] < a[end]:
                     Statistics.add_comparisons()  # debug
-                    if i < j:
-                        array[i], array[j] = array[j], array[i]
-                        Statistics.add_swaps()  # debug
-                    else:
-                        break
+                    a[start], a[end] = a[end], a[start]
+                    Statistics.add_swaps()
+                return
+            pivot_index = int((end - start) / 2) + start
+            Verbose.print('  Array', a[start:end + 1],
+                          ', pivot array[{}] = {}'.format(pivot_index, a[pivot_index]))
+            a[end], a[pivot_index] = a[pivot_index], a[end]
+            Statistics.add_swaps()
+            i = start
+            j = end - 1
+            while i < j:
+                while a[i] > a[end]:
+                    Statistics.add_comparisons()  # debug
+                    i += 1
+                while a[j] <= a[end] and j >= 0:
+                    Statistics.add_comparisons()  # debug
+                    j -= 1
+                Statistics.add_comparisons()  # debug
+                if i < j:
+                    Statistics.add_swaps()
+                    a[i], a[j] = a[j], a[i]
+                else:
+                    break
 
-                array[j], array[end] = array[end], array[j]
-                Statistics.add_swaps()  # debug
-                quicc(array, start, j - 1)
-                quicc(array, j + 1, end)
+            a[i], a[end] = a[end], a[i]
+            quicc(a, start, i - 1)
+            quicc(a, i+1, end)
 
         quicc(array, 0, len(array) - 1)
         return array
 
     @staticmethod
-    def selection_sort(array, verbose=False, debug=False):
+    def selection_sort(array):
         array_size = len(array)
         for pivot in range(0, array_size):
             min_element_index = pivot
@@ -190,7 +190,7 @@ class Sorter:
         return array
 
     @staticmethod
-    def shell_sort(array, verbose=False, debug=False):
+    def shell_sort(array):
         size = len(array)
         # knuth
         ks = []
