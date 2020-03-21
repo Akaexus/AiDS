@@ -148,8 +148,10 @@ class SortingMachine:
                             print('  {}'.format(algorithm), end='')
                             if algorithm not in results:
                                 results[algorithm] = {}
+                            if array_type not in results[algorithm]:
+                                results[algorithm][array_type] = {}
                             if round_number == 0:
-                                results[algorithm][size] = {
+                                results[algorithm][array_type][size] = {
                                     'comparisons': [],
                                     'swaps': [],
                                     'time': [],
@@ -161,9 +163,9 @@ class SortingMachine:
                             elapsed_time = round(time.time() - start_time, 3)
                             print(' - {}s'.format(elapsed_time))
                             report = Statistics.report()
-                            results[algorithm][size]['comparisons'].append(report['comparisons'])
-                            results[algorithm][size]['swaps'].append(report['swaps'])
-                            results[algorithm][size]['time'].append(round(elapsed_time, 3))
+                            results[algorithm][array_type][size]['comparisons'].append(report['comparisons'])
+                            results[algorithm][array_type][size]['swaps'].append(report['swaps'])
+                            results[algorithm][array_type][size]['time'].append(round(elapsed_time, 3))
         json_results = json.dumps(results)
         with open('sorting.json', 'w') as f:
             f.write(json_results)
