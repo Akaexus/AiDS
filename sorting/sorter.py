@@ -46,6 +46,7 @@ class Sorter:
         'quick_sort',
     ]
 
+    # zlozonosc O(n+k)
     @staticmethod
     def counting_sort(array):
         array_size = len(array)
@@ -73,6 +74,8 @@ class Sorter:
             occurences_before[array[i]] -= 1
         return final_array
 
+    # zlozonosc O(nlogn)
+    # h = log(n, 2)
     @staticmethod
     def heap_sort(array):
         def fix_tree(tree, n):
@@ -91,6 +94,8 @@ class Sorter:
             maxIndex -= 1
         return array
 
+    # O(n) dla optymistycznej tablicy
+    # O(n^2) dla pesymistycznej
     @staticmethod
     def insertion_sort(array):
         for pivot in range(0, len(array)):
@@ -103,6 +108,8 @@ class Sorter:
                     break
         return array
 
+    # n-1 podziałów
+    # O(nlogn)
     @staticmethod
     def merge_sort(array):
         def divide(array, start, end):
@@ -138,6 +145,7 @@ class Sorter:
         divide(array, 0, len(array))
         return array
 
+    # O(nlogn)
     @staticmethod
     def quick_sort(array):
         def quicc(a, start, end):
@@ -189,21 +197,25 @@ class Sorter:
             Statistics.add_swaps()  # debug
         return array
 
+    # O(n^2)
     @staticmethod
     def shell_sort(array):
         size = len(array)
-        # knuth
         ks = []
-        k = 1
-        while True:
-            k_candidate = int((3**k -1) / 2)
-            Statistics.add_comparisons()  # debug
-            if k_candidate <= (size / 3):
-                ks.append(k_candidate)
-                k += 1
-            else:
-                break
-
+        if size >= 3:
+            # knuth
+            ks = []
+            k = 1
+            while True:
+                k_candidate = int((3**k -1) / 2)
+                Statistics.add_comparisons()  # debug
+                if k_candidate <= (size / 3):
+                    ks.append(k_candidate)
+                    k += 1
+                else:
+                    break
+        else:
+            ks = [1]
         k_index = len(ks) - 1
         k = ks[k_index]
         while k_index >= 0:

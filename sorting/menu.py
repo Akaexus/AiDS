@@ -10,7 +10,7 @@ import json
 class SortingMachine:
     powers = [1, 2, 3, 4, 5]  # 10**x
     multipliers = [1, 2, 3, 4, 5, 7]
-    ROUNDS = 15
+    ROUNDS = 7
 
     algorithm_names = Sorter.algorithm_names
     array_types = Generator.array_types
@@ -72,13 +72,18 @@ class SortingMachine:
         import os
 
         available_algorithms = self.algorithm_picker()
+        user_array = []
         while True:
-            print('Please enter path to file:')
-            path = input()
-            if os.path.exists(path):
-                break
-        with open(path, 'r') as f:
-            user_array = self.input_array(f)
+            while True:
+                print('Please enter path to file:')
+                path = input()
+                if os.path.exists(path):
+                    break
+            with open(path, 'r') as f:
+                array = self.input_array(f)
+                if len(array) >= 3:
+                    user_array = array
+                    break
         Verbose.enabled = True
         for algorithm_name in available_algorithms:
             array = user_array[:]
@@ -104,7 +109,7 @@ class SortingMachine:
         while True:
             print('> ', end='')
             size = input()
-            if size.isdigit():
+            if size.isdigit() and size >=3:
                 break
 
         for array_type in available_array_types:
