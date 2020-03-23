@@ -49,8 +49,13 @@ class SortingMachine:
 
     def keyboard_input(self):
         available_algorithms = self.algorithm_picker()
-        print('Please enter numbers:')
-        user_array = self.input_array()
+        user_array = []
+        while True:
+            print('Please enter numbers:')
+            user_array = self.input_array()
+            if len(user_array) > 0:
+                break
+
         Verbose.enabled = True
         for algorithm_name in available_algorithms:
             array = user_array[:]
@@ -109,13 +114,17 @@ class SortingMachine:
         while True:
             print('> ', end='')
             size = input()
-            if size.isdigit() and size >=3:
-                break
+            if size.isdigit():
+                if int(size) >= 3:
+                    size = int(size)
+                    break
 
         for array_type in available_array_types:
             print('\nTesting {} array of size {}'.format(array_type, size))
             generator = getattr(Generator, array_type)
             array_to_sort = generator(int(size))
+            if size <= 20:
+                print('ARRAY_TO_SORT:', array_to_sort)
             for algorithm in available_algorithms:
                 array = array_to_sort[:]
                 f = getattr(Sorter, algorithm)
