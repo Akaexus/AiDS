@@ -15,9 +15,9 @@ class Node:
             'self': id(self),
             'value': self.value,
             'key': self.key,
-            'parent': id(self.parent) if self.parent is not None else None,
-            'left': id(self.left),
-            'right': id(self.right),
+            'parent': self.parent.key if self.parent is not None else None,
+            'left': self.left.key if self.left else None,
+            'right': self.right.key if self.right else None,
 
         })
 

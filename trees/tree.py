@@ -31,6 +31,4 @@ for line in string_data.split('\n'):
 # print(tree)
 
 tree = Tree.build_random(10)
-print(tree)
-tree.delete_node(int(input()))
-print(tree)
+print(tree.delete_post_order())

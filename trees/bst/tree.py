@@ -1,5 +1,6 @@
 from bst.node import Node
-
+import pprint
+pp = pprint.PrettyPrinter(indent=4)
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -110,6 +111,7 @@ class Tree:
 
         else:
             node.key = 0
+            node.parent = None
             self.nodes[0] = node
         self.nodes[node.key] = node
 
@@ -159,23 +161,28 @@ class Tree:
                     return None
             return current.parent
 
-    def delete_node(self, key):
+    def delete_node(self, entity):
+        if isinstance(entity, Node):
+            key = entity.key
+        else:
+            key = entity
         if key not in self.nodes:
             return False
 
         node = self.nodes[key]
+        # samotny węzeł
+        if node.parent is None:
+            del self.nodes[node.key]
         # bezdzietny węzeł
-        if not node.left and not node.right:
-            print('bezdzietny')
-            node_id = id(node)
-            if id(node.parent.left) == node_id:
+        elif not node.left and not node.right:
+            if node.get_parent_side() == 'left':
                 node.parent.left = None
             else:
                 node.parent.right = None
-                del self.nodes[key]
-                print(self.nodes)
+                # del self.nodes[key]
+            self.nodes[key] = None
+            self.nodes.pop(key)
         elif bool(node.left) ^ bool(node.right):  # xor
-            print('jednodziecko')
             parent = node.parent
             if parent.left == node:
                 if node.right:
@@ -187,11 +194,51 @@ class Tree:
                     parent.right = node.right
                 else:
                     parent.right = node.left
-            del self.nodes[key]
+            # del self.nodes[key]
+            self.nodes.pop(key)
         else: # ma wszystkie dzieci
-            print('oba dzieciory')
             successor = self.get_successor(node)
-            print(successor)
             node.value = successor.value
             node.key = successor.key
             self.delete_node(successor)
+
+    def in_order(self):
+        visited = []
+
+        def in_order(node):
+            if node:
+                in_order(node.left)
+                visited.append(node.value)
+                in_order(node.right)
+
+        in_order(self.nodes[0])
+        return visited
+
+    def pre_order(self, key=0):
+        visited = []
+
+        def pre_order(node):
+            if node:
+                visited.append(node.value)
+                pre_order(node.left)
+                pre_order(node.right)
+
+        pre_order(self.nodes[key])
+        return visited
+
+    def delete_post_order(self):
+        visited = []
+
+        def post_order(node):
+            if node:
+                post_order(node.left)
+                post_order(node.right)
+                self.delete_node(node)
+                print('=== Deleting ===')
+                print(node)
+                print(self)
+
+        post_order(self.nodes[0])
+        return visited
+
+
