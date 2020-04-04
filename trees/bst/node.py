@@ -26,3 +26,11 @@ class Node:
 
     def __repr__(self):
         return self.__str__()
+
+    def get_parent_side(self):
+        if self.parent.left == self:
+            return 'left'
+        elif self.parent.right == self:
+            return 'right'
+        else:
+            return None

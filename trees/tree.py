@@ -26,6 +26,11 @@ for line in string_data.split('\n'):
     if line:
         data[i] = [int(x) for x in line.split()]
         i += 1
-print(data)
-tree = Tree.build_from_data(data)
+# print(data)
+# tree = Tree.build_from_data(data)
+# print(tree)
+
+tree = Tree.build_random(10)
+print(tree)
+tree.delete_node(int(input()))
 print(tree)
