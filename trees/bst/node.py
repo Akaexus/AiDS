@@ -1,9 +1,9 @@
 class Node:
-    parent = None,
-    left = None,
-    right = None,
-    key = None,
-    value = None,
+    parent = None
+    left = None
+    right = None
+    key = None
+    value = None
 
     def __init__(self, value, left=None, right=None):
         self.value = value
@@ -15,7 +15,7 @@ class Node:
             'self': id(self),
             'value': self.value,
             'key': self.key,
-            'parent': self.parent.key if self.parent is not None else None,
+            'parent': self.parent.key if self.parent else None,
             'left': self.left.key if self.left else None,
             'right': self.right.key if self.right else None,
 
@@ -28,9 +28,19 @@ class Node:
         return self.__str__()
 
     def get_parent_side(self):
-        if self.parent.left == self:
-            return 'left'
-        elif self.parent.right == self:
-            return 'right'
+        if self.parent:
+            if self.parent.left == self:
+                return 'left'
+            else:
+                return 'right'
         else:
             return None
+
+    def add_child(self, child, side='left'):
+        if child:
+            child.parent = self
+        if side == 'left':
+            self.left = child
+        else:
+            self.right = child
+

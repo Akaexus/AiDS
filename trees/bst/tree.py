@@ -33,10 +33,17 @@ class Tree:
 
         return tree
 
+    def get_root(self):
+        for index in self.nodes:
+            if self.nodes[index].parent is None:
+                return self.nodes[index]
+        return False
+
     def __str__(self):
         if len(self.nodes) == 0:
             return ''
-        current = self.nodes[0]
+
+        current = self.get_root()
         visited_nodes = []
         depth = 0
         output = []
@@ -44,7 +51,7 @@ class Tree:
         def reverse_in_order(node, level=0, side=None):
             if node:
                 #prawy
-                reverse_in_order(node.right, level +1, 'right')
+                reverse_in_order(node.right, level + 1, 'right')
                 visited_nodes.append(node.key)
 
                 # printowanie
@@ -62,7 +69,7 @@ class Tree:
                 # lewy
                 reverse_in_order(node.left, level + 1, 'left')
 
-        reverse_in_order(self.nodes[0])
+        reverse_in_order(self.get_root())
 
         # napraw pionowe linie w schemacie
         def fix_schema(schema, char):
@@ -90,7 +97,7 @@ class Tree:
     def add(self, value):
         node = Node(value)
         if len(self.nodes):
-            current = self.nodes[0]  # root
+            current = self.get_root()  # root
             # przeszukaj drzewo w poszukiwaniu ścieżki do ostatniego pasującego liścia
             while current.value > value and current.left is not None or current.value <= value and current.right is not None:
                 if current.value > value:
@@ -124,7 +131,7 @@ class Tree:
         return tree
 
     def find_min(self):
-        current = self.nodes[0]
+        current = self.get_root()
         path = []
         while current.left:
             path.append(current.value)
@@ -135,7 +142,7 @@ class Tree:
         }
 
     def find_max(self):
-        current = self.nodes[0]
+        current = self.get_root()
         path = []
         while current.right:
             path.append(current.value)
@@ -211,7 +218,7 @@ class Tree:
                 visited.append(node.value)
                 in_order(node.right)
 
-        in_order(self.nodes[0])
+        in_order(self.get_root())
         return visited
 
     def pre_order(self, key=0):
@@ -238,7 +245,145 @@ class Tree:
                 print(node)
                 print(self)
 
-        post_order(self.nodes[0])
+        post_order(self.get_root())
         return visited
+
+    # turn  string  'left' lub 'right'
+    def rotate(self, b, turn):
+        a = b.parent
+        a_parent = a.parent
+        a_parent_side = a.get_parent_side()
+        if turn == 'right':
+            br = b.right
+            a.add_child(br, 'left')
+            b.add_child(a, 'right')
+            if a_parent:
+                a_parent.add_child(b, a_parent_side)
+            else:
+                b.parent = None
+        else:
+            bl = b.left
+            a.add_child(bl, 'right')
+            b.add_child(a, 'left')
+            if a_parent:
+                # parent_side = a.get_parent_side()
+                a_parent.add_child(b, a_parent_side)
+            else:
+                b.parent = None
+
+
+    def balance(self):
+        current = self.get_root()
+        # faza 1 - lista liniowa idąca w prawo
+        n = 1
+        while current.right or current.left:
+            while current.left is not None:
+                self.rotate(current.left, 'right')
+                current = current.parent
+            current = current.right
+            n += 1
+
+        print(self)
+
+        def log2(x):
+            y = 1
+            x >>= 1
+            while x:
+                x >>= 1
+                y <<= 1
+            return y
+
+        s = n + 1 - log2(n+1)
+        root = self.get_root()
+        current = root.right
+        for i in range(s):
+            print(i)
+            self.rotate(current, 'left')
+            if current.right:
+                current = current.right.right
+
+        n -= s
+        while n > 1:
+            n >>= 1
+            root = self.get_root()
+            current = root.right
+            for i in range(n):
+                self.rotate(current, 'left')
+                if current.right:
+                    current = current.right.right
+        print(self)
+
+
+
+        # import math
+        # m = 2 ** int(math.log(n+1, 2)) - 1
+        # root = self.get_root()
+        # current = root.right
+        # print(current)
+        # for i in range((n - 1)//2):
+        #     self.rotate(current, 'left')
+        #     if current.right:
+        #         current = current.right.right
+        # print(self)
+        # m //= 2
+        # while m > 1:
+        #     m //= 2
+        #     root = self.get_root()
+        #     current = root.right
+        #     for i in range(m):
+        #         self.rotate(current, 'left')
+        #         if current.right:
+        #             current = current.right.right
+        #     print(self)
+
+
+        # s = n + 1 - log2(n+1)
+        # root = self.get_root()
+        # current = root.right
+        # root = root.right
+        # for i in range(int(n/2)):
+        #     print('current ', current)
+        #     self.rotate(current, 'left')
+        #     if current.right:
+        #         current = current.right.right
+        # n -= s
+        # print(n)
+
+
+        # n -= s
+        # print('dalej')
+        # current = root.right
+        # while n:
+        #     print('n = ', n)
+        #     print('current', current)
+        #     n >>= 1
+        #     self.rotate(current, 'left')
+        #     if current.right and current.right.right:
+        #         current = current.right.right
+        #     print(self)
+
+        # while n > 1:
+        #     current = root.right
+        #     root = current
+        #     print('\n\n running for n = {}, s = {}'.format(n, s))
+        #     print('current')
+        #     print('root')
+        #     for i in range(s):
+        #         self.rotate(current, 'left')
+        #         if current.right and current.right.right:
+        #             current = current.right.right
+        #     print(self)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
