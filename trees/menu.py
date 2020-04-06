@@ -1,4 +1,7 @@
 from bst.tree import Tree
+from bst.node import Node
+from avl.tree import AVLTree
+from avl.node import AVLNode
 import random
 
 
@@ -25,21 +28,29 @@ while True:
     if n == "2":
         ile = (int(wprowadzenie_cyfry("Ile elementów ma liczyć drzewo? ")))
         for i in range(ile):
-            lista.append(random.randint(0, 64))
+            if ile < 100:
+                lista = random.sample(range(1, 100), ile)
+            else:
+                lista = random.sample(range(1, ile*3), ile)
         break
 
 while True:
     print("[1] Zbuduj drzewo AVL.\n"
-          "[2] Zbuduj losowe drzewo BST.")
+          "[2] Zbuduj drzewo BST.")
     n = wprowadzenie_cyfry("Wybór: ")
 
     if n == "1":
+        drzewo = AVLTree()
+        print(lista)
+        for e in lista:
+            drzewo.add(e)
         break
 
     if n == "2":
         drzewo = Tree()
-        for i in range(ile):
-            drzewo.add(lista[i])
+        print(lista)
+        for e in lista:
+            drzewo.add(e)
         break
 
 print(drzewo)

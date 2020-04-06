@@ -1,34 +1,24 @@
 from bst.tree import Tree
+from bst.node import Node
+from avl.node import AVLNode
+from avl.tree import AVLTree
+import pprint
 
-# data = {}
-#
-# for i in range(int(input())):
-#     data[i] = ([int(x) for x in input().split()])
-# print(data)
-
-string_data = '''
-5 1 2
-2 3 4
-7 5 6
-3 7 8
-8 9 0
-9 0 10
-1 0 11
-6 0 0
-5 0 0
-3 0 0
-0 0 0
-2 0 0
-'''
-data = {}
-i = 0
-for line in string_data.split('\n'):
-    if line:
-        data[i] = [int(x) for x in line.split()]
-        i += 1
-# print(data)
-# tree = Tree.build_from_data(data)
+# tree = Tree()
+# tree.add(2)
+# print(tree.nodes)
 # print(tree)
 
-tree = Tree.build_random(10)
-print(tree.delete_post_order())
+# pp = pprint.PrettyPrinter(indent=4)
+#
+# tree = AVLTree()
+# import random
+# for value in random.sample(range(1, 100), 10):
+#     tree.add(value)
+# print(tree)
+# key = int(input())
+# print(tree.find(key))
+# tree.remove(tree.find(key))
+# print(tree)
+#
+

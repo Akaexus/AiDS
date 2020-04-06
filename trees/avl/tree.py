@@ -109,6 +109,8 @@ class AVLTree(Tree):
             else:
                 b.balance_factor = 0
             c.balance_factor = 0
+        else:
+            super().rotate(a, type)
 
     def add(self, entity):
         node = None
