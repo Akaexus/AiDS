@@ -34,10 +34,17 @@ class Tree:
         return tree
 
     def get_root(self):
-        for index in self.nodes:
-            if self.nodes[index].parent is None:
-                return self.nodes[index]
-        return False
+        def return_first_node():
+            for key in self.nodes:
+                return key
+        first_key = return_first_node()
+        if first_key:
+            node = self.nodes[return_first_node()]
+            while node.parent:
+                node = node.parent
+            return node
+        else:
+            return None
 
     def __str__(self):
         if len(self.nodes) == 0:
