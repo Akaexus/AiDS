@@ -101,7 +101,7 @@ while True:
         print(drzewo)
 
     if n == "8":
-        print(Tree.balance(drzewo))
+        Tree.balance(drzewo)
         print(drzewo)
 
     if n == "9":
