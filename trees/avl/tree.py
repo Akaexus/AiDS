@@ -177,7 +177,113 @@ class AVLTree(Tree):
             # sam korzen
             self.nodes[node.key] = node
 
+    # poprzednik
+    def prev_node(self, node):
+        if node:
+            if node.left:
+                node = node.left
+                while node.right:
+                    node = node.right
+            else:
+                r = node
+                node = node.parent
+                while node and node.right is not r:
+                    r = node
+                    node = node.parent
+        return node
 
+    def find(self, key, node = None):
+        if not node:
+            node = self.get_root()
+        while node and node.key != key:
+            node = node.left if key < node.key else node.right
+        return node
+
+    def remove(self, x):
+        root = self.get_root()
+        t = None
+        y = None
+        z = None
+        nest = None
+        if x.left and x.right:
+            y = self.remove(self.prev_node(x))
+            nest = False
+        else:
+            if x.left:
+                y = x.left
+                x.left = None
+            else:
+                y = x.right
+                x.right = None
+
+            x.balance_factor = 0
+            nest = True
+
+        if y:
+            y.parent = x.parent
+            y.left = x.left
+            if y.left:
+                y.left.parent = y
+            y.right = x.right
+            if y.right:
+                y.right.parent = y
+            y.balance_factor = x.balance_factor
+
+        if x.parent:
+            if x.parent.left == x:
+                x.parent.left = y
+            else:
+                x.parent.right = y
+        else:
+            root = y
+
+        if nest:
+            z = y
+            y = x.parent
+            while y:
+                if not y.balance_factor:
+                    # przypadek 1
+                    if y.left is z:
+                        y.balance_factor = -1
+                    else:
+                        y.balance_factor = 1
+                    break
+                else:
+                    if (y.balance_factor == 1 and y.left is z) or (y.balance_factor == -1 and y.right is z):
+                        # przypadek 2
+                        y.balance_factor = 0
+                        z = y
+                        y = y.parent
+                    else:
+                        if y.left is z:
+                            t = y.right
+                        else:
+                            t = y.left
+
+                        if not t.balance_factor:
+                            # przypadek 3A
+                            if y.balance_factor == 1:
+                                self.rotate(y, 'll')
+                            else:
+                                self.rotate(y, 'rr')
+                            break
+                        elif y.balance_factor == t.balance_factor:
+                            # przypadek 3b
+                            if y.balance_factor == 1:
+                                self.rotate(y, 'll')
+                            else:
+                                self.rotate(y, 'rr')
+                            z = t
+                            y = t.parent
+                        else:
+                            # przypadek 3c
+                            if y.balance_factor == 1:
+                                self.rotate(y, 'lr')
+                            else:
+                                self.rotate(y, 'rl')
+                            z = y.parent
+                            y = z.parent
+        return x
 
 
 
