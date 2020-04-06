@@ -178,7 +178,7 @@ class Tree:
             current = current.right
         return {
             'path': path,
-            'min': current.value
+            'max': current.value
         }
 
     def get_successor(self, node):
