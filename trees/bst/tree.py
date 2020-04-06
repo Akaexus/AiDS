@@ -258,7 +258,8 @@ class Tree:
         in_order(self.get_root())
         return visited
 
-    def pre_order(self, key=0):
+    def pre_order(self, key=None):
+
         visited = []
 
         def pre_order(node):
@@ -266,8 +267,10 @@ class Tree:
                 visited.append(node.value)
                 pre_order(node.left)
                 pre_order(node.right)
-
-        pre_order(self.nodes[key])
+        if key:
+            pre_order(self.nodes[key])
+        else:
+            pre_order(self.get_root())
         return visited
 
     def delete_post_order(self):
