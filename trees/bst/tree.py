@@ -121,7 +121,36 @@ class Tree:
             node.parent = None
             self.nodes[0] = node
         self.nodes[node.key] = node
+        
+    def randomized_add(self, value):
+        import random
+        node = Node(value)
+        if len(self.nodes):
+            current = self.get_root()  # root
+            # przeszukaj drzewo w poszukiwaniu ścieżki do ostatniego pasującego liścia
+            while current.value > value and current.left is not None or current.value <= value and current.right is not None:
+                if random.randint(0, 1) == 1:
+                    if current.left:
+                        current = current.left
+                else:
+                    if current.right:
+                        current = current.right
+            # przy ostatnim pasującym liściu zdecyduj która strona
+            if random.randint(0, 1) == 1:
+                current.left = node
+                node.parent = current
+                node.key = node.parent.key * 2 + 1
+            else:
+                current.right = node
+                node.parent = current
+                node.key = node.parent.key * 2 + 2
 
+        else:
+            node.key = 0
+            node.parent = None
+            self.nodes[0] = node
+        self.nodes[node.key] = node    
+        
     @staticmethod
     def build_random(n, min=0, max=64):
         import random
@@ -149,7 +178,7 @@ class Tree:
             current = current.right
         return {
             'path': path,
-            'min': current.value
+            'max': current.value
         }
 
     def get_successor(self, node):
