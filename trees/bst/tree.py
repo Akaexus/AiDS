@@ -271,9 +271,10 @@ class Tree:
             else:
                 b.parent = None
 
-
     def balance(self):
-        current = self.get_root()
+        root = self.get_root()
+        current = root
+        root = root.right
         # faza 1 - lista liniowa idąca w prawo
         n = 1
         while current.right or current.left:
@@ -282,8 +283,6 @@ class Tree:
                 current = current.parent
             current = current.right
             n += 1
-
-        print(self)
 
         def log2(x):
             y = 1
@@ -297,88 +296,20 @@ class Tree:
         root = self.get_root()
         current = root.right
         for i in range(s):
-            print(i)
             self.rotate(current, 'left')
             if current.right:
                 current = current.right.right
 
         n -= s
+        root = self.get_root()
         while n > 1:
             n >>= 1
-            root = self.get_root()
             current = root.right
+            root = current
             for i in range(n):
                 self.rotate(current, 'left')
                 if current.right:
                     current = current.right.right
-        print(self)
-
-
-
-        # import math
-        # m = 2 ** int(math.log(n+1, 2)) - 1
-        # root = self.get_root()
-        # current = root.right
-        # print(current)
-        # for i in range((n - 1)//2):
-        #     self.rotate(current, 'left')
-        #     if current.right:
-        #         current = current.right.right
-        # print(self)
-        # m //= 2
-        # while m > 1:
-        #     m //= 2
-        #     root = self.get_root()
-        #     current = root.right
-        #     for i in range(m):
-        #         self.rotate(current, 'left')
-        #         if current.right:
-        #             current = current.right.right
-        #     print(self)
-
-
-        # s = n + 1 - log2(n+1)
-        # root = self.get_root()
-        # current = root.right
-        # root = root.right
-        # for i in range(int(n/2)):
-        #     print('current ', current)
-        #     self.rotate(current, 'left')
-        #     if current.right:
-        #         current = current.right.right
-        # n -= s
-        # print(n)
-
-
-        # n -= s
-        # print('dalej')
-        # current = root.right
-        # while n:
-        #     print('n = ', n)
-        #     print('current', current)
-        #     n >>= 1
-        #     self.rotate(current, 'left')
-        #     if current.right and current.right.right:
-        #         current = current.right.right
-        #     print(self)
-
-        # while n > 1:
-        #     current = root.right
-        #     root = current
-        #     print('\n\n running for n = {}, s = {}'.format(n, s))
-        #     print('current')
-        #     print('root')
-        #     for i in range(s):
-        #         self.rotate(current, 'left')
-        #         if current.right and current.right.right:
-        #             current = current.right.right
-        #     print(self)
-
-
-
-
-
-
 
 
 
