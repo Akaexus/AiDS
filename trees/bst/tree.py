@@ -293,6 +293,11 @@ class Tree:
         a = b.parent
         a_parent = a.parent
         a_parent_side = a.get_parent_side()
+        #     A              B
+        #    / \            / \
+        #   B   AR  -->    BR  A
+        #  / \                / \
+        # BL BR              BR  AR
         if turn == 'right':
             br = b.right
             a.add_child(br, 'left')
@@ -302,6 +307,11 @@ class Tree:
             else:
                 b.parent = None
         else:
+            #   A              B
+            #  / \            / \
+            # AL  B    -->   A   BR
+            #    / \        / \
+            #   BL  BR     AL  BL
             bl = b.left
             a.add_child(bl, 'right')
             b.add_child(a, 'left')
@@ -331,7 +341,7 @@ class Tree:
                 x >>= 1
                 y <<= 1
             return y
-
+        # wyznaczenie
         s = n + 1 - log2(n+1)
         root = self.get_root()
         current = root.right

@@ -59,11 +59,15 @@ class AVLTree(Tree):
         output = fix_schema(output[::-1], '└')[::-1]
         return '\n'.join(output)
 
-
     # type RR, RL, LL, LR
     def rotate(self, a, type):
         type = type.lower()
         if type == 'rr':
+            #    A                B
+            #   / \(r)           / \
+            #  AL  B     --->   A   BR
+            #     / \(r)       / \
+            #   BL   BR       AL  BL
             b = a.right
             super().rotate(b, 'left')
             if b.balance_factor == -1:
@@ -73,6 +77,11 @@ class AVLTree(Tree):
                 a.balance_factor = -1
                 b.balance_factor = 1
         elif type == 'll':
+            #     A           B
+            # (l)/ \         / \
+            #   B  AR ----> BL  A
+            #  / \             / \
+            # BL  BR          BR  AR
             b = a.left
             super().rotate(b, 'right')
             if b.balance_factor == 1:
@@ -82,6 +91,13 @@ class AVLTree(Tree):
                 a.balance_factor = 1
                 b.balance_factor = -1
         elif type == 'rl':
+            #     A               A                 C
+            #    / \(r)          / \               / \
+            #   AL  B  ------>  AL  C  ------>    /   \
+            #   (l)/ \             / \           A     B
+            #     C   BR          CL  B         / \   / \
+            #    / \                 / \       AL CL CR  BR
+            #   CL  CR              CR  BR
             b = a.right
             c = b.left
             super().rotate(c, 'right')
@@ -96,6 +112,13 @@ class AVLTree(Tree):
                 b.balance_factor = 0
             c.balance_factor = 0
         elif type == 'lr':
+            #      A                    A                C
+            #     / \                  / \              / \
+            #    B   AR    ------>    C   AR   ---->   /   \
+            #   / \                  / \              /     \
+            #  BL  C                B  CR            B       A
+            #     / \              / \              / \     / \
+            #    CL  CR           BL CL            BL CL   CR  AR
             b = a.left
             c = b.right
             super().rotate(c, 'left')
@@ -122,6 +145,7 @@ class AVLTree(Tree):
         current = self.get_root()
 
         if current:
+            # standardowe wstawianie z drzewa BST
             self.nodes[node.key] = node
             while True:
                 if node.key < current.value:
@@ -136,31 +160,33 @@ class AVLTree(Tree):
                     current = current.right
 
             parent = node.parent
-            # FAZA 2
+            # RÓWNOWAŻENIE DRZEWA
             # przypadek pierwszy - tylko jedno dziecko
             if parent.balance_factor != 0:
                 parent.balance_factor = 0
             else:
+                # ustawianie współczynnika balance_factor jak nie ma dzieci
                 if parent.left == node:
                     parent.balance_factor = 1
                 else:
                     parent.balance_factor = -1
 
+                # idziemy w góre i naprawiamy współczynniki balance_factor
                 r = parent.parent
                 t = False
 
                 while r:
-                    if r.balance_factor:
+                    if r.balance_factor: # if niezrownowazone
                         t = True
                         break
                     if r.left == parent:
                         r.balance_factor = 1
                     else:
                         r.balance_factor = -1
-                    parent = r
+                    parent = r  # do góry
                     r = r.parent
 
-                if t:
+                if t: # jesli r nie jest zrownowazone
                     if r.balance_factor == 1:
                         if r.right == parent:
                             r.balance_factor = 0
@@ -194,7 +220,7 @@ class AVLTree(Tree):
                     node = node.parent
         return node
 
-    def find(self, key, node = None):
+    def find(self, key, node=None):
         if not node:
             node = self.get_root()
         while node and node.key != key:
@@ -245,6 +271,7 @@ class AVLTree(Tree):
             while y:
                 if not y.balance_factor:
                     # przypadek 1
+                    # węzeł y był w stanie równowagi
                     if y.left is z:
                         y.balance_factor = -1
                     else:
@@ -253,10 +280,12 @@ class AVLTree(Tree):
                 else:
                     if (y.balance_factor == 1 and y.left is z) or (y.balance_factor == -1 and y.right is z):
                         # przypadek 2
+                        # skrócone zostało cięższe drzewo
                         y.balance_factor = 0
                         z = y
                         y = y.parent
                     else:
+                        # skrócone zostało lżejsze poddrzewo
                         if y.left is z:
                             t = y.right
                         else:
@@ -264,6 +293,7 @@ class AVLTree(Tree):
 
                         if not t.balance_factor:
                             # przypadek 3A
+                            # współczynnik balance_factor t dziecka węzła y w cięższym poddrzewie jest równy 0
                             if y.balance_factor == 1:
                                 self.rotate(y, 'll')
                             else:
@@ -271,6 +301,7 @@ class AVLTree(Tree):
                             break
                         elif y.balance_factor == t.balance_factor:
                             # przypadek 3b
+                            # Współczynnik balance factor y jest taki sam jak współczynnik t
                             if y.balance_factor == 1:
                                 self.rotate(y, 'll')
                             else:
@@ -279,6 +310,7 @@ class AVLTree(Tree):
                             y = t.parent
                         else:
                             # przypadek 3c
+                            # balance_factor y i t są przeciwne
                             if y.balance_factor == 1:
                                 self.rotate(y, 'lr')
                             else:
