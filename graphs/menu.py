@@ -21,7 +21,7 @@ string = """10 16
 6 7
 6 8
 """
-x = AdjacencyMatrix.load(string)
+x = SuccessorList.load(string)
 print(x)
-print(x.dfs_sort())
+# print(x.dfs_sort())
 print(x.khan_sort())

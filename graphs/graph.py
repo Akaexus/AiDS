@@ -11,9 +11,11 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 class Graph:
-    pass
+    @staticmethod
+    def generate():
+        pass
 
-class AdjacencyMatrix:
+class AdjacencyMatrix(Graph):
     matrix = []
     def __init__(self, matrix):
         self.matrix = matrix
@@ -109,55 +111,85 @@ class AdjacencyMatrix:
                     self.matrix[successor][node] = 0
         return path
 
+class SuccessorList(Graph):
+    def __init__(self, lst):
+        self.lst = lst
 
+    def __str__(self):
+        return self.__repr__()
 
-
-
-
-
-
+    def __repr__(self):
+        array = [
+            ['Węzeł',
+            'Następniki']
+        ]
+        for index in self.lst:
+            print(index, self.lst[index])
+            row = ['{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC), self.lst[index]]
+            array.append(row)
+        table = AsciiTable(array)
+        return str(table.table)
+        return ''
 
     @staticmethod
-    def generate(size, options: dict):
-        """
-        Zwraca obiekt klasy AdjacencyMatrix reprezentujący
-        macierz sąsiedztwa grafu.
+    def load(string):
+        string = string.split('\n')
+        size, number_of_edges = map(int, string[0].split())
+        lst = {}
+        for index in range(size):
+            lst[index] = []
+        for edge in string[1:]:
+            if edge != '':
+                i, j = map(int, edge.split())
+                lst[i].append(j)
+        return SuccessorList(lst)
 
-        Opcje:
+    def dfs_sort(self):
+        size = len(self.lst)
+        path = []
+        visited = [False] * size
+        stack = []
+        while len(path) != size:
+            for index, is_visited in enumerate(visited):
+                if not is_visited:
+                    node = index
+                    break
+            stack.append(node)
+            visited[node] = True
+            while len(stack):
+                found_successor = False
+                for successor in self.lst[node]:
+                    if not visited[successor]:
+                        found_successor = True
+                        node = successor
+                        stack.append(node)
+                        visited[node] = True
+                        break
+                if not found_successor:
+                    path.append(node)
+                    stack.pop()
+                    if len(stack):
+                        node = stack[-1]
+        return path[::-1]
 
-        - directed: bool - graf skierowany/nieskierowany
-        - saturation: float - współczynnik nasycenia 0-1
-        -
+    def khan_sort(self):
+        size = len(self.lst)
+        nodes_status = [True] * size
+        path = []
+        while len(path) < size:
+            # poszukaj node z in(n) = 0
+            predecessor_status = [True] * size
 
-        :param size: Rząd grafu (ilość węzłów).
-        :type size: int
-        :param options: Opcje generowania grafu.
-        :type options: dict[Any, Any]
-        :return: AdjacencyMatrix
-        """
-        matrix = [[None] * size for row in [None] * size]
-        for i in range(size):
-            for j in range(size):
-                randint = random.randint(0, 100)
-                if matrix[i][j] is None and matrix[j][i] is None and i != j and randint <= options['saturation'] * 100:
-                    if options['directed']:
-                        if random.randint(0, 1):
-                            matrix[i][j] = 1
-                            matrix[j][i] = -1
-                        else:
-                            matrix[i][j] = -1
-                            matrix[j][i] = 1
-                    else:
-                        matrix[i][j] = 1
-                        matrix[j][i] = 1
+            for index in self.lst:
+                if nodes_status[index]:
+                    for successor in self.lst[index]:
+                        predecessor_status[successor] = False
                 else:
-                    matrix[i][j] = 0
-                    matrix[j][i] = 0
-
-
-        return AdjacencyMatrix(matrix)
-
-
-
+                    predecessor_status[index] = False
+            for node, status in enumerate(predecessor_status):
+                if status:
+                    path.append(node)
+                    nodes_status[node] = False
+        return path
 
 
