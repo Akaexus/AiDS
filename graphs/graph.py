@@ -274,7 +274,6 @@ class GraphMatrix(Graph):
         matrix = copy.deepcopy(self.matrix)
         size = len(matrix)
         max_key = size + 3
-        print(max_key)
         available = [True] * (size+1)
         path = []
         while len(path) < size:
@@ -282,14 +281,43 @@ class GraphMatrix(Graph):
                 if matrix[index][max_key - 1] == 0 and available[index]:
                     path.append(index)
                     available[index] = False
-            print(path)
             for index in matrix:
                 if available[index]:
                     matrix[index][max_key - 1] = 0
                     for second_node in range(1, size + 1):
                         if available[second_node]:
                             if size < matrix[index][second_node] <= (2 * size):
-                                print(index, second_node)
                                 matrix[index][max_key - 1] = second_node
 
-            print(self)
+        return path
+
+    def dfs_sort(self):
+        size = len(self.matrix)
+        path = []
+        available = {}
+        stack = []
+        for i in range(1, size+1):
+            available[i] = True
+        node = None
+        while len(path) != size:
+            for node_index in available:
+                if available[node_index]:
+                    node = node_index
+                    break
+            stack.append(node)
+            available[node] = False
+            while len(stack):
+                successor_found = False
+                for successor in range(1, size+1):
+                    if 0 < self.matrix[node][successor] <= size and available[successor]:
+                        successor_found = True
+                        node = successor
+                        stack.append(node)
+                        available[node] = False
+                        break
+                if not successor_found:
+                    path.append(node)
+                    stack.pop()
+                    if len(stack):
+                        node = stack[-1]
+        return path[::-1]

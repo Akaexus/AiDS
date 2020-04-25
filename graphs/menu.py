@@ -41,5 +41,5 @@ string = """10 16
 """
 x = GraphMatrix.load(string)
 print(x)
-# print(x.dfs_sort())
-print(x.khan_sort())
+print(x.dfs_sort())
+# print(x.khan_sort())
