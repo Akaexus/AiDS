@@ -204,12 +204,15 @@ class GraphMatrix(Graph):
         import copy
         size = len(self.matrix)
         printable_matrix = []
-        header = ['\\'] + list(range(1, size+3))
+        header = ['\\'] + list(range(1, size+4))
         header = list(map(lambda x: '{}{}{}'.format(bcolors.OKBLUE, x, bcolors.ENDC), header))
         printable_matrix.append(header)
-        for index in range(1, size):
+        for index in range(1, size+1):
             row = ['{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC)]
             row += self.matrix[index].values()
+            row[-3] = '{}{}{}'.format(bcolors.FAIL, row[-3], bcolors.ENDC)
+            row[-2] = '{}{}{}'.format(bcolors.OKGREEN, row[-2], bcolors.ENDC)
+            row[-1] = '{}{}{}'.format(bcolors.WARNING, row[-1], bcolors.ENDC)
             printable_matrix.append(row)
         table = AsciiTable(printable_matrix)
         return str(table.table)
@@ -220,7 +223,7 @@ class GraphMatrix(Graph):
         size, number_of_edges = map(int, string[0].split())
         edges = list(filter(lambda e: e!= '', string[1:]))
         matrix = {}
-        for i in range(1, size+2):
+        for i in range(1, size+1):
             matrix[i] = {}
             for j in range(1, size+4):
                     matrix[i][j] = None
@@ -245,19 +248,48 @@ class GraphMatrix(Graph):
                 edge_exists = '{} {}'.format(i, j) in edges
                 rev_edge_exists = '{} {}'.format(j, i) in edges
                 if edge_exists:
-                    matrix[i][j] = successors_list[i][-1] if len(successors_list[i]) else 0
-                if rev_edge_exists:
-                    matrix[i][j] = size + predecessors_list[i][-1]
-                if not edge_exists and not rev_edge_exists:
-                    matrix[i][j] = -no_incident_list[i][-1]
-
-            print(matrix)
-
-
-
-
-
-
-
-
+                    if rev_edge_exists:
+                        matrix[i][j] = 0
+                        pass
+                    else:
+                        matrix[i][j] = successors_list[i][-1]
+                else:
+                    if rev_edge_exists:
+                        matrix[i][j] = size + predecessors_list[i][-1]
+                        pass
+                    else:
+                        matrix[i][j] = -no_incident_list[i][-1]
+                        pass
+                # if edge_exists:
+                #     matrix[i][j] = successors_list[i][-1] if len(successors_list[i]) else 0
+                # if rev_edge_exists:
+                #     matrix[i][j] = size + predecessors_list[i][-1]
+                # if not edge_exists and not rev_edge_exists:
+                #     print(i, j)
+                #     matrix[i][j] = -no_incident_list[i][-1]
         return GraphMatrix(matrix)
+
+    def khan_sort(self):
+        import copy
+        matrix = copy.deepcopy(self.matrix)
+        size = len(matrix)
+        max_key = size + 3
+        print(max_key)
+        available = [True] * (size+1)
+        path = []
+        while len(path) < size:
+            for index in matrix:
+                if matrix[index][max_key - 1] == 0 and available[index]:
+                    path.append(index)
+                    available[index] = False
+            print(path)
+            for index in matrix:
+                if available[index]:
+                    matrix[index][max_key - 1] = 0
+                    for second_node in range(1, size + 1):
+                        if available[second_node]:
+                            if size < matrix[index][second_node] <= (2 * size):
+                                print(index, second_node)
+                                matrix[index][max_key - 1] = second_node
+
+            print(self)
