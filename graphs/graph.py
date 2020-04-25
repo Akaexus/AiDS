@@ -192,4 +192,72 @@ class SuccessorList(Graph):
                     nodes_status[node] = False
         return path
 
+class GraphMatrix(Graph):
+    matrix = []
+    def __init__(self, matrix):
+        self.matrix = matrix
 
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        import copy
+        size = len(self.matrix)
+        printable_matrix = []
+        header = ['\\'] + list(range(1, size+3))
+        header = list(map(lambda x: '{}{}{}'.format(bcolors.OKBLUE, x, bcolors.ENDC), header))
+        printable_matrix.append(header)
+        for index in range(1, size):
+            row = ['{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC)]
+            row += self.matrix[index].values()
+            printable_matrix.append(row)
+        table = AsciiTable(printable_matrix)
+        return str(table.table)
+
+    @staticmethod
+    def load(string):
+        string = string.split('\n')
+        size, number_of_edges = map(int, string[0].split())
+        edges = list(filter(lambda e: e!= '', string[1:]))
+        matrix = {}
+        for i in range(1, size+2):
+            matrix[i] = {}
+            for j in range(1, size+4):
+                    matrix[i][j] = None
+        successors_list = {}
+        predecessors_list = {}
+        no_incident_list = {}
+        for i in range(1, size+1):
+            successors_list[i] = []
+            predecessors_list[i] = []
+            no_incident_list[i] = list(range(1, size+1))
+        for edge in edges:
+            edge = list(map(int, edge.split()))
+            successors_list[edge[0]].append(edge[1])
+            predecessors_list[edge[1]].append(edge[0])
+            no_incident_list[edge[0]].remove(edge[1])
+            no_incident_list[edge[1]].remove(edge[0])
+        for i in range(1, size+1):
+            matrix[i][size + 1] = successors_list[i][0] if len(successors_list[i]) else 0
+            matrix[i][size + 2] = predecessors_list[i][0] if len(predecessors_list[i]) else 0
+            matrix[i][size + 3] = no_incident_list[i][0] if len(no_incident_list[i]) else 0
+            for j in range(1, size+1):
+                edge_exists = '{} {}'.format(i, j) in edges
+                rev_edge_exists = '{} {}'.format(j, i) in edges
+                if edge_exists:
+                    matrix[i][j] = successors_list[i][-1] if len(successors_list[i]) else 0
+                if rev_edge_exists:
+                    matrix[i][j] = size + predecessors_list[i][-1]
+                if not edge_exists and not rev_edge_exists:
+                    matrix[i][j] = -no_incident_list[i][-1]
+
+            print(matrix)
+
+
+
+
+
+
+
+
+        return GraphMatrix(matrix)
