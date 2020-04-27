@@ -33,7 +33,9 @@ if n == "1":
         input_string += '\n' + inputEdge(i)
 
 elif n == "2":
-    pass
+    path = input('sciezka> ')
+    with open(path) as f:
+        input_string = f.read()
 
 print("Wybierz interpretację grafu: \n"
       "[1] Macierz sąsiedztwa.\n"
