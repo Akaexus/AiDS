@@ -1,72 +1,67 @@
 from graph import *
 from node import Node
 
-def wprowadzenie_cyfry(tekst):
+def wprowadzenie_cyfry(tekst, min, max):
     n = input(tekst)
-    if n.isnumeric() == 1:
+    if n.isnumeric() and min <= int(n) <= max:
         return n
     else:
-        return wprowadzenie_cyfry(tekst)
+        return wprowadzenie_cyfry(tekst, min, max)
+
+def verifyEdge(e):
+    try:
+        e = [int(x) for x in e.split()]
+        return len(e) == 2
+    except Exception:
+        return False
+
+def inputEdge(index):
+    while True:
+        edge = input('{}> '.format(index))
+        if verifyEdge(edge):
+            return edge
 
 
-while True:
-    print("[1] Wprowadź dane z klawiatury.\n"
-          "[2] Wygeneruj losowy ciąg.\n"
-          "[3] Wczytaj dane z pliku.")
-    graf = []
-    n = wprowadzenie_cyfry("Wybór: ")
+print("[1] Wprowadź dane z klawiatury.\n"
+      "[2] Wczytaj dane z pliku.")
+n = wprowadzenie_cyfry("Wybór: ", 1, 2)
+input_string = ""
+if n == "1":
+    v, e = [int(x) for x in input("Wprowadź liczbę wierzchołków i krawędzi: ").split()]
+    input_string += "{} {}".format(v, e)
+    for i in range(e + 1):
+        input_string += '\n' + inputEdge(i)
 
-    if n == "1":
-        v, e = [int(x) for x in input("Wprowadź liczbę wierzchołków i krawędzi: ").split()]
-        for i in range(e):
-            para = input().split()
-            para[0] = int(para[0])
-            para[1] = int(para[1])
-            graf.append(para)
-        break
+elif n == "2":
+    pass
 
-    if n == "2":
+print("Wybierz interpretację grafu: \n"
+      "[1] Macierz sąsiedztwa.\n"
+      "[2] Lista następników.\n"
+      "[3] Macierz grafu.")
+n = wprowadzenie_cyfry("Wybór: ", 1, 3)
 
-        break
-
-    if n == "3":
-
-        break
-
-
-while True:
-    print("Wybierz interpretację grafu: \n"
-          "[1] Macierz sąsiedztwa.\n"
-          "[2] Lista następników.\n"
-          "[3] Macierz grafu.")
-    n = wprowadzenie_cyfry("Wybór: ")
-
-    if n == "1":
-
-        break
-
-    if n == "2":
-
-        break
-
-    if n == "3":
-
-        break
-
-
+graph_classes = {
+    "1": AdjacencyMatrix,
+    "2": SuccessorList,
+    "3": GraphMatrix
+}
+graph = graph_classes[n].load(input_string)
+print(graph)
 while True:
     print("Wybierz metodę sortowania topologicznego: \n"
           "[1] Procedura przechodzenia wgłąb(DFS).\n"
-          "[2] Usuwaniem wierzchołków o zerowym stopniu wejściowym(DEL).")
-    lista = []
-    n = wprowadzenie_cyfry("Wybór: ")
+          "[2] Usuwaniem wierzchołków o zerowym stopniu wejściowym(DEL).\n"
+          "[3] Exit")
+
+    n = wprowadzenie_cyfry("Wybór: ", 1, 3)
 
     if n == "1":
-        print(lista.dfs_sort())
-        break
+        print(graph.dfs_sort())
 
     if n == "2":
-        print(lista.khan_sort())
+        print(graph.khan_sort())
+    if n == "3":
         break
 
 

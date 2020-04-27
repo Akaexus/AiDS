@@ -26,12 +26,14 @@ class AdjacencyMatrix(Graph):
     def __repr__(self):
         import copy
         size = len(self.matrix)
-        printable_matrix = copy.deepcopy(self.matrix)
+        print(self.matrix)
+        printable_matrix = []
         header = ['\\'] + list(range(size))
         header = list(map(lambda x: '{}{}{}'.format(bcolors.OKBLUE, x, bcolors.ENDC), header))
-        printable_matrix.insert(0, header)
-        for index in range(size):
-            printable_matrix[index + 1].insert(0, '{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC))
+        printable_matrix.append(header)
+        for index in range(1, size+1):
+            print('index {}'.format(size))
+            printable_matrix.append(['{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC)] + list(self.matrix[index].values()))
         table = AsciiTable(printable_matrix)
         return str(table.table)
 
@@ -39,7 +41,11 @@ class AdjacencyMatrix(Graph):
     def load(string):
         string = string.split('\n')
         size, number_of_edges = map(int, string[0].split())
-        matrix = [[0] * (size) for i in range(size)]
+        matrix = {}
+        for i in range(1, size + 1):
+            matrix[i] = {}
+            for j in range(1, size + 1):
+                matrix[i][j] = 0
         for edge in string[1:]:
             if edge != '':
                 i, j = map(int, edge.split())
@@ -67,11 +73,13 @@ class AdjacencyMatrix(Graph):
     def dfs_sort(self):
         size = len(self.matrix)
         path = []
-        visited = [False] * size
+        visited = {}
+        for i in range(1, size + 1):
+            visited[i] = False
         stack = []
         while len(path) != size:
-            for index, is_visited in enumerate(visited):
-                if not is_visited:
+            for index in visited:
+                if not visited[index]:
                     node = index
                     break
             stack.append(node)
@@ -79,7 +87,8 @@ class AdjacencyMatrix(Graph):
 
             while len(stack):
                 found_successor = False
-                for index, direction in enumerate(self.matrix[node]):
+                for index in self.matrix[node]:
+                    direction = self.matrix[node][index]
                     if direction == 1 and not visited[index]:
                         found_successor = True
                         node = index
@@ -95,18 +104,22 @@ class AdjacencyMatrix(Graph):
 
     def khan_sort(self):
         size = len(self.matrix)
-        disabled_nodes = [False] * size
+        disabled_nodes = {}
+        for i in range(1, size + 1):
+            disabled_nodes[i] = False
+        # disabled_nodes = [False] * size
         path = []
         node = None
         while len(path) < size:
-            for index, row in enumerate(self.matrix):
-                if -1 not in row and disabled_nodes[index] == False:
+            for index in self.matrix:
+                if -1 not in self.matrix[index].values() and disabled_nodes[index] == False:
+                    print('found {}'.format(index))
                     node = index
                     disabled_nodes[index] = True
                     break
             path.append(node)
-            for successor, direction in enumerate(self.matrix[node]):
-                if direction:
+            for successor in self.matrix[node]:
+                if self.matrix[node][successor]:
                     self.matrix[node][successor] = 0
                     self.matrix[successor][node] = 0
         return path
@@ -129,14 +142,13 @@ class SuccessorList(Graph):
             array.append(row)
         table = AsciiTable(array)
         return str(table.table)
-        return ''
 
     @staticmethod
     def load(string):
         string = string.split('\n')
         size, number_of_edges = map(int, string[0].split())
         lst = {}
-        for index in range(size):
+        for index in range(1, size+1):
             lst[index] = []
         for edge in string[1:]:
             if edge != '':
@@ -147,11 +159,13 @@ class SuccessorList(Graph):
     def dfs_sort(self):
         size = len(self.lst)
         path = []
-        visited = [False] * size
+        visited = {}
+        for i in range(1, size+1):
+            visited[i] = False
         stack = []
         while len(path) != size:
-            for index, is_visited in enumerate(visited):
-                if not is_visited:
+            for index in visited:
+                if not visited[index]:
                     node = index
                     break
             stack.append(node)
@@ -174,11 +188,15 @@ class SuccessorList(Graph):
 
     def khan_sort(self):
         size = len(self.lst)
-        nodes_status = [True] * size
+        nodes_status = {}
+        for i in range(1, size + 1):
+            nodes_status[i] = True
         path = []
         while len(path) < size:
             # poszukaj node z in(n) = 0
-            predecessor_status = [True] * size
+            predecessor_status = {}
+            for i in range(1, size + 1):
+                predecessor_status[i] = True
 
             for index in self.lst:
                 if nodes_status[index]:
@@ -186,8 +204,8 @@ class SuccessorList(Graph):
                         predecessor_status[successor] = False
                 else:
                     predecessor_status[index] = False
-            for node, status in enumerate(predecessor_status):
-                if status:
+            for node in predecessor_status:
+                if predecessor_status[node]:
                     path.append(node)
                     nodes_status[node] = False
         return path
