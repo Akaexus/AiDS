@@ -29,7 +29,7 @@ input_string = ""
 if n == "1":
     v, e = [int(x) for x in input("Wprowadź liczbę wierzchołków i krawędzi: ").split()]
     input_string += "{} {}".format(v, e)
-    for i in range(e + 1):
+    for i in range(e):
         input_string += '\n' + inputEdge(i)
 
 elif n == "2":
