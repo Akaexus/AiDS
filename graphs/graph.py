@@ -26,13 +26,11 @@ class AdjacencyMatrix(Graph):
     def __repr__(self):
         import copy
         size = len(self.matrix)
-        print(self.matrix)
         printable_matrix = []
         header = ['\\'] + list(range(size))
         header = list(map(lambda x: '{}{}{}'.format(bcolors.OKBLUE, x, bcolors.ENDC), header))
         printable_matrix.append(header)
         for index in range(1, size+1):
-            print('index {}'.format(size))
             printable_matrix.append(['{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC)] + list(self.matrix[index].values()))
         table = AsciiTable(printable_matrix)
         return str(table.table)
@@ -53,6 +51,41 @@ class AdjacencyMatrix(Graph):
                 matrix[j][i] = -1
 
         return AdjacencyMatrix(matrix)
+
+    def checkForCycles(self):
+        size = len(self.matrix)
+        path = []
+        visited = {}
+        for i in range(1, size + 1):
+            visited[i] = False
+        stack = []
+        while len(path) != size:
+            for index in visited:
+                if not visited[index]:
+                    node = index
+                    break
+            stack.append(node)
+            visited[node] = True
+
+            while len(stack):
+                found_successor = False
+                for index in self.matrix[node]:
+                    direction = self.matrix[node][index]
+                    if direction == 1 and not visited[index]:
+                        found_successor = True
+                        node = index
+                        stack.append(node)
+                        visited[node] = True
+                        break
+                    elif direction == 1:
+                        if index in stack:
+                            return True
+                if not found_successor:
+                    path.append(node)
+                    stack.pop()
+                    if len(stack):
+                        node = stack[-1]
+        return False
 
     # def dfs_sort(self):
     #     visited = [False] * len(self.matrix)
@@ -113,7 +146,6 @@ class AdjacencyMatrix(Graph):
         while len(path) < size:
             for index in self.matrix:
                 if -1 not in self.matrix[index].values() and disabled_nodes[index] == False:
-                    print('found {}'.format(index))
                     node = index
                     disabled_nodes[index] = True
                     break
@@ -137,7 +169,6 @@ class SuccessorList(Graph):
             'Następniki']
         ]
         for index in self.lst:
-            print(index, self.lst[index])
             row = ['{}{}{}'.format(bcolors.OKBLUE, index, bcolors.ENDC), self.lst[index]]
             array.append(row)
         table = AsciiTable(array)

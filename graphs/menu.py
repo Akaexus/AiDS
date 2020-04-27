@@ -48,6 +48,13 @@ graph_classes = {
     "2": SuccessorList,
     "3": GraphMatrix
 }
+
+graph = AdjacencyMatrix.load(input_string)
+if graph.checkForCycles():
+    import sys
+    print('Wykryto cykle!')
+    sys.exit()
+
 graph = graph_classes[n].load(input_string)
 print(graph)
 while True:
