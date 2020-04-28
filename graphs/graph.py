@@ -52,14 +52,17 @@ class AdjacencyMatrix(Graph):
 
         return AdjacencyMatrix(matrix)
 
+    # poszukaj cykli
     def checkForCycles(self):
         size = len(self.matrix)
         path = []
+        # zaincjalizuj tablice statusu odwiedzonego
         visited = {}
         for i in range(1, size + 1):
             visited[i] = False
         stack = []
         while len(path) != size:
+            # wybierz pierwszy element do stosu
             for index in visited:
                 if not visited[index]:
                     node = index
@@ -69,18 +72,23 @@ class AdjacencyMatrix(Graph):
 
             while len(stack):
                 found_successor = False
+                # znajdz nastepnika
                 for index in self.matrix[node]:
                     direction = self.matrix[node][index]
                     if direction == 1 and not visited[index]:
+                        # znaleziono następnika
                         found_successor = True
                         node = index
                         stack.append(node)
                         visited[node] = True
                         break
                     elif direction == 1:
+                        # znaleziono nastepnika, w którym już byliśmy
                         if index in stack:
+                            #znaleziono cykl
                             return True
                 if not found_successor:
+                    # nie ma nastepników, idź w góre
                     path.append(node)
                     stack.pop()
                     if len(stack):
@@ -106,11 +114,13 @@ class AdjacencyMatrix(Graph):
     def dfs_sort(self):
         size = len(self.matrix)
         path = []
+        # zaincjalizuj tablice statusu odwiedzonego
         visited = {}
         for i in range(1, size + 1):
             visited[i] = False
         stack = []
         while len(path) != size:
+            # wybierz element początkowy
             for index in visited:
                 if not visited[index]:
                     node = index
@@ -120,15 +130,20 @@ class AdjacencyMatrix(Graph):
 
             while len(stack):
                 found_successor = False
+                # poszukaj następnika
                 for index in self.matrix[node]:
                     direction = self.matrix[node][index]
                     if direction == 1 and not visited[index]:
                         found_successor = True
+                        # ustaw następnik jako obecny węzeł
                         node = index
+                        # dodaj do stosu
                         stack.append(node)
+                        # oznacz jako odwiedzony
                         visited[node] = True
                         break
                 if not found_successor:
+                    # idz do gory
                     path.append(node)
                     stack.pop()
                     if len(stack):
@@ -137,6 +152,7 @@ class AdjacencyMatrix(Graph):
 
     def khan_sort(self):
         size = len(self.matrix)
+        # stworz tablice statusu odwiedzenia
         disabled_nodes = {}
         for i in range(1, size + 1):
             disabled_nodes[i] = False
@@ -145,11 +161,13 @@ class AdjacencyMatrix(Graph):
         node = None
         while len(path) < size:
             for index in self.matrix:
+                # znajdź wierzchołek, który nie ma żadnych krawędzi wejściowych
                 if -1 not in self.matrix[index].values() and disabled_nodes[index] == False:
                     node = index
                     disabled_nodes[index] = True
                     break
             path.append(node)
+            # usuń krawędzie usuniętego wierzchołka
             for successor in self.matrix[node]:
                 if self.matrix[node][successor]:
                     self.matrix[node][successor] = 0
@@ -190,11 +208,13 @@ class SuccessorList(Graph):
     def dfs_sort(self):
         size = len(self.lst)
         path = []
+        # inicjalizacja listy odwiedzonych
         visited = {}
         for i in range(1, size+1):
             visited[i] = False
         stack = []
         while len(path) != size:
+            # poszukaj węzła startowego
             for index in visited:
                 if not visited[index]:
                     node = index
@@ -203,6 +223,7 @@ class SuccessorList(Graph):
             visited[node] = True
             while len(stack):
                 found_successor = False
+                # poszukaj dostępnego następnika z listy następników
                 for successor in self.lst[node]:
                     if not visited[successor]:
                         found_successor = True
@@ -219,22 +240,28 @@ class SuccessorList(Graph):
 
     def khan_sort(self):
         size = len(self.lst)
+        # lista z statusem każdego węzła
         nodes_status = {}
         for i in range(1, size + 1):
             nodes_status[i] = True
         path = []
         while len(path) < size:
-            # poszukaj node z in(n) = 0
+            # tablica ze statusem poprzednika
+            # True jeżeli nie ma poprzednika
+            # False jeżeli ma
             predecessor_status = {}
             for i in range(1, size + 1):
                 predecessor_status[i] = True
 
             for index in self.lst:
+                # jeżeli węzeł ma jakiegoś następnika, to predecessor_status[następnik] = False
                 if nodes_status[index]:
                     for successor in self.lst[index]:
                         predecessor_status[successor] = False
                 else:
+                    # jeśli został użyty to zostaje oznaczony jako niedostępny
                     predecessor_status[index] = False
+            # wyszukaj węzeł bez poprzedników
             for node in predecessor_status:
                 if predecessor_status[node]:
                     path.append(node)
@@ -323,13 +350,16 @@ class GraphMatrix(Graph):
         matrix = copy.deepcopy(self.matrix)
         size = len(matrix)
         max_key = size + 3
+        # tablica dostępności wierzchołków
         available = [True] * (size+1)
         path = []
         while len(path) < size:
+            # poszukaj wierzchołka, który ma drugą dodatkową kolumne równą 0
             for index in matrix:
                 if matrix[index][max_key - 1] == 0 and available[index]:
                     path.append(index)
                     available[index] = False
+            # przelicz jeszcze raz drugą kolumne dla pozostałych wierzchołków
             for index in matrix:
                 if available[index]:
                     matrix[index][max_key - 1] = 0
@@ -343,12 +373,14 @@ class GraphMatrix(Graph):
     def dfs_sort(self):
         size = len(self.matrix)
         path = []
+        # lista dostępnych wierzchołków
         available = {}
         stack = []
         for i in range(1, size+1):
             available[i] = True
         node = None
         while len(path) != size:
+            # wybieramy pierwszy element
             for node_index in available:
                 if available[node_index]:
                     node = node_index
@@ -357,6 +389,7 @@ class GraphMatrix(Graph):
             available[node] = False
             while len(stack):
                 successor_found = False
+                # szukamy następnika
                 for successor in range(1, size+1):
                     if 0 < self.matrix[node][successor] <= size and available[successor]:
                         successor_found = True
@@ -365,6 +398,7 @@ class GraphMatrix(Graph):
                         available[node] = False
                         break
                 if not successor_found:
+                    # dodajemy węzeł ścieżki i cofamy się do góry
                     path.append(node)
                     stack.pop()
                     if len(stack):
