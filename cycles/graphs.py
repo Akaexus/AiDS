@@ -189,6 +189,6 @@ class SuccessorList(Graph):
             stack.append(node)
         euler(start_node)
         if stack[0] == stack[-1] and len(stack) != self.number_of_edges:
-            return stack
+            return stack[::-1]
         else:
             return False
