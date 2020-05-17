@@ -1,5 +1,5 @@
 from terminaltables import AsciiTable
-import random
+import copy
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -50,7 +50,9 @@ class AdjacencyMatrix(Graph):
                 matrix[i][j] = 1
                 matrix[j][i] = 1
 
-        return AdjacencyMatrix(matrix)
+        matrix = AdjacencyMatrix(matrix)
+        matrix.number_of_edges = number_of_edges
+        return matrix
 
     def getHamiltonianCycle(self):
         size = len(self.matrix)
@@ -87,6 +89,25 @@ class AdjacencyMatrix(Graph):
             return False
         return stack
 
+
+    def getEulerCycle(self):
+        stack = []
+        matrix = copy.deepcopy(self.matrix)
+        start_node = list(matrix.keys())[0]
+        def euler(node):
+            for successor in matrix[node]:
+                if matrix[node][successor]:
+                    matrix[node][successor] = 0
+                    matrix[successor][node] = 0
+                    euler(successor)
+            stack.append(node)
+        euler(start_node)
+        if len(stack) == self.number_of_edges + 1 and stack[0] == stack[-1]:
+            return stack
+        else:
+            return False
+
+
 class SuccessorList(Graph):
     def __init__(self, lst):
         self.lst = lst
@@ -116,7 +137,10 @@ class SuccessorList(Graph):
             if edge != '':
                 i, j = map(int, edge.split())
                 lst[i].append(j)
-        return SuccessorList(lst)
+
+        graph = SuccessorList(lst)
+        graph.number_of_edges = number_of_edges
+        return graph
 
     def getHamiltonianCycle(self):
         size = len(self.lst)
@@ -151,3 +175,20 @@ class SuccessorList(Graph):
         else:
             return False
         return stack
+
+    def getEulerCycle(self):
+        stack = []
+        lst = copy.deepcopy(self.lst)
+        start_node = list(lst.keys())[0]
+
+        def euler(node):
+            for index, successor in enumerate(lst[node]):
+                if successor:
+                    lst[node][index] = 0
+                    euler(successor)
+            stack.append(node)
+        euler(start_node)
+        if stack[0] == stack[-1] and len(stack) != self.number_of_edges:
+            return stack
+        else:
+            return False
