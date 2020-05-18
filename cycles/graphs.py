@@ -84,10 +84,10 @@ class AdjacencyMatrix(Graph):
 
         hamiltonianCycle(start_node)
         if len(stack) == size - 1:
-            return [start_node] + stack[::-1] + [start_node]
+            return "Cykl Hamiltona: {}".format([start_node] + stack[::-1] + [start_node])
         else:
-            return False
-        return stack
+            return "Graf wejściowy nie zawiera cyklu Hamiltona."
+        return "Cykl Hamiltona: {}".format(stack)
 
 
     def getEulerCycle(self):
@@ -103,9 +103,9 @@ class AdjacencyMatrix(Graph):
             stack.append(node)
         euler(start_node)
         if len(stack) == self.number_of_edges + 1 and stack[0] == stack[-1]:
-            return stack
+            return "Cykl Eulera: {}".format(stack)
         else:
-            return False
+            return "Graf wejściowy nie zawiera cyklu Eulera."
 
 
 class SuccessorList(Graph):
@@ -173,8 +173,8 @@ class SuccessorList(Graph):
         if len(stack) == size - 1:
             return [start_node] + stack[::-1] + [start_node]
         else:
-            return False
-        return stack
+            return "Graf wejściowy nie zawiera cyklu Hamiltona."
+        return "Cykl Hamiltona: {}".format(stack)
 
     def getEulerCycle(self):
         stack = []
@@ -189,6 +189,6 @@ class SuccessorList(Graph):
             stack.append(node)
         euler(start_node)
         if stack[0] == stack[-1] and len(stack) != self.number_of_edges:
-            return stack[::-1]
+            return "Cykl Eulera: {}".format(stack[::-1])
         else:
-            return False
+            return "Graf wejściowy nie zawiera cyklu Eulera."
