@@ -38,10 +38,40 @@ elif n == "2":
 
 print("Czego szukamy? \n"
       "[1] Cyklu Hamiltona.\n"
-      "[2] Cyklu Eulera.")
-n = wprowadzenie_cyfry("Wybór: ", 1, 2)
+      "[2] Cyklu Eulera.\n"
+      "[3] Obu.")
+n = wprowadzenie_cyfry("Wybór: ", 1, 3)
 if n == "1":
-    pass
+    graph = AdjacencyMatrix.load(input_string)
+    print("Graf nieskierowany (macierz sąsiedztwa)")
+    print(graph)
+    print(graph.getHamiltonianCycle())
+    print("---------------------------------------------------")
+    graph = SuccessorList.load(input_string)
+    print("Graf skierowany (lista nastepników)")
+    print(graph)
+    print(graph.getHamiltonianCycle())
 
 elif n == "2":
-    pass
+    graph = AdjacencyMatrix.load(input_string)
+    print("Graf nieskierowany (macierz sąsiedztwa)")
+    print(graph)
+    print(graph.getEulerCycle())
+    print("---------------------------------------------------")
+    graph = SuccessorList.load(input_string)
+    print("Graf skierowany (lista nastepników)")
+    print(graph)
+    print(graph.getEulerCycle())
+
+elif n == "3":
+    graph = AdjacencyMatrix.load(input_string)
+    print("Graf nieskierowany (macierz sąsiedztwa)")
+    print(graph)
+    print(graph.getHamiltonianCycle())
+    print(graph.getEulerCycle())
+    print("---------------------------------------------------")
+    graph = SuccessorList.load(input_string)
+    print("Graf skierowany (lista nastepników)")
+    print(graph)
+    print(graph.getHamiltonianCycle())
+    print(graph.getEulerCycle())
