@@ -54,6 +54,7 @@ class AdjacencyMatrix(Graph):
         matrix.number_of_edges = number_of_edges
         return matrix
 
+    # algorytm Robertsa-Floresa
     def getHamiltonianCycle(self):
         size = len(self.matrix)
         stack = []
@@ -70,14 +71,19 @@ class AdjacencyMatrix(Graph):
             visited[node] = True
             stack_size += 1
 
+            # szukamy nastepnika
             for successor in self.matrix[node]:
                 if self.matrix[node][successor] == 1:
+                    # warunek koncowy - zrobilismy pelen cykl
                     if successor == start_node and stack_size == size:
                         return True
+                    # nieodwiedzony nastepnik
                     if not visited[successor]:
                         if hamiltonianCycle(successor):
                             stack.append(successor)
                             return True
+            # jesli wczesniej nie bylo returna
+            # to jest to slepa sciezka, wracamy
             visited[node] = False
             stack_size -= 1
             return False
@@ -94,9 +100,12 @@ class AdjacencyMatrix(Graph):
         stack = []
         matrix = copy.deepcopy(self.matrix)
         start_node = list(matrix.keys())[0]
+        # dfs
         def euler(node):
+            # szukamy nastepnika
             for successor in matrix[node]:
                 if matrix[node][successor]:
+                    # usuwamy krawedz
                     matrix[node][successor] = 0
                     matrix[successor][node] = 0
                     euler(successor)
@@ -142,6 +151,7 @@ class SuccessorList(Graph):
         graph.number_of_edges = number_of_edges
         return graph
 
+    # algorytm Robertsa-Floresa
     def getHamiltonianCycle(self):
         size = len(self.lst)
         stack = []
@@ -159,13 +169,18 @@ class SuccessorList(Graph):
             visited[node] = True
             stack_size += 1
 
+            # szukamy nastepnika
             for successor in self.lst[node]:
+                # warunek koncowy - zrobilismy pelen cykl
                 if successor == start_node and stack_size == size:
                     return True
+                # nieodwiedzony nastepnik
                 if not visited[successor]:
                     if hamiltonianCycle(successor):
                         stack.append(successor)
                         return True
+            # jesli wczesniej nie bylo returna
+            # to jest to slepa sciezka, wracamy
             visited[node] = False
             stack_size -= 1
             return False
@@ -181,9 +196,12 @@ class SuccessorList(Graph):
         lst = copy.deepcopy(self.lst)
         start_node = list(lst.keys())[0]
 
+        #dfs
         def euler(node):
+            # szukamy nastepnika
             for index, successor in enumerate(lst[node]):
                 if successor:
+                    # usuwamy krawedz
                     lst[node][index] = 0
                     euler(successor)
             stack.append(node)
