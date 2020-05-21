@@ -7,7 +7,6 @@ def generator(n=10, saturation=0.1, directed=False):
     cycle = list(range(1, n+1))
     random.shuffle(cycle)
     cycle.append(cycle[0])
-    print(cycle)
     edges = {}
     numberOfEdges = 0
     for i in range(1, n+1):
