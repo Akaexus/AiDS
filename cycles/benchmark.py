@@ -3,23 +3,30 @@ import time
 import random
 
 
-def generator(n=10, saturation=0.5, directed=False):
+def generator(n=10, saturation=0.1, directed=False):
+    cycle = list(range(1, n+1))
+    random.shuffle(cycle)
+    cycle.append(cycle[0])
+    print(cycle)
     edges = {}
+    numberOfEdges = 0
     for i in range(1, n+1):
         edges[i] = {}
-    for v in range(1, n+1):
+    for i in range(1, len(cycle)):
+        numberOfEdges += 1
+        edges[cycle[i-1]][cycle[i]] = 1
+    finalNumberOfEdges = int(((n*(n-1)) if directed else int((n*(n-1))/2)) * saturation)
+    candidateEdges = []
+    for v in edges:
         for u in range(1, n+1):
-            if v != u:
-                if random.random() <= saturation:
-                    if directed:
-                        edges[v][u] = 1
-                    else:
-                        if v not in edges[u]:
-                            edges[u][v] = 1
-    numberOfEdges = 0
+            if u!=v and u not in edges[v]:
+                if [v, u] not in candidateEdges:
+                    candidateEdges.append([u, v])
+    random.shuffle(candidateEdges)
+    for i in candidateEdges[:(finalNumberOfEdges-numberOfEdges)]:
+        edges[i[0]][i[1]] = 1
     output = ''
     for v in edges:
-        numberOfEdges += len(edges[v])
         for u in edges[v].keys():
             output += '{} {}\n'.format(v, u)
     return '{} {}\n'.format(n, numberOfEdges) + output
@@ -54,34 +61,34 @@ S_Hamilton = []
 for s in nasycenia:
     for n in wierzchołki:
         for i in range(10):
-            dane = generator(n, s, False)
+            dane = generator(n, s, True)
 
-            graf = AdjacencyMatrix.load(dane)
-            start = time.time()
-            graf.getEulerCycle()
-            finish = time.time()
-            NS_Euler.append(finish - start)
-
-            start = time.time()
-            graf.getHamiltonianCycle()
-            finish = time.time()
-            NS_Hamilton.append(finish - start)
-
-            # graf = SuccessorList.load(dane)
+            # graf = AdjacencyMatrix.load(dane)
             # start = time.time()
             # graf.getEulerCycle()
             # finish = time.time()
-            # S_Euler.append(finish - start)
+            # NS_Euler.append(finish - start)
             #
             # start = time.time()
             # graf.getHamiltonianCycle()
             # finish = time.time()
+            # NS_Hamilton.append(finish - start)
+
+            graf = SuccessorList.load(dane)
+            start = time.time()
+            graf.getEulerCycle()
+            finish = time.time()
+            S_Euler.append(finish - start)
+
+            start = time.time()
+            graf.getHamiltonianCycle()
+            finish = time.time()
             # S_Hamilton.append(finish - start)
         print("Liczba wierzchołków: {} , nasycenie: {}".format(n, s))
-        print("Graf nieskierowany - Cykl Hamiltona: średnio {}s , odchylenie {}s".format(srednia(NS_Hamilton), odchylenie(NS_Hamilton)))
-        print("Graf nieskierowany - Cykl Eulera: średnio {}s , odchylenie {}s".format(srednia(NS_Euler), odchylenie(NS_Euler)))
-        # print("Graf skierowany - Cykl Hamiltona: średnio {}s , odchylenie {}s".format(srednia(S_Hamilton), odchylenie(S_Hamilton)))
-        # print("Graf skierowany - Cykl Eulera: średnio {}s , odchylenie {}s".format(srednia(S_Euler), odchylenie(S_Euler)))
+        #print("Graf nieskierowany - Cykl Hamiltona: średnio {}s , odchylenie {}s".format(srednia(NS_Hamilton), odchylenie(NS_Hamilton)))
+        #print("Graf nieskierowany - Cykl Eulera: średnio {}s , odchylenie {}s".format(srednia(NS_Euler), odchylenie(NS_Euler)))
+        print("Graf skierowany - Cykl Hamiltona: średnio {}s , odchylenie {}s".format(srednia(S_Hamilton), odchylenie(S_Hamilton)))
+        print("Graf skierowany - Cykl Eulera: średnio {}s , odchylenie {}s".format(srednia(S_Euler), odchylenie(S_Euler)))
         print("----------------------------------------------------------------------------------------------------")
         NS_Euler.clear()
         NS_Hamilton.clear()
