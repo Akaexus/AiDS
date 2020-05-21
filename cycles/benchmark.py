@@ -83,7 +83,7 @@ for s in nasycenia:
             start = time.time()
             graf.getHamiltonianCycle()
             finish = time.time()
-            # S_Hamilton.append(finish - start)
+            S_Hamilton.append(finish - start)
         print("Liczba wierzchołków: {} , nasycenie: {}".format(n, s))
         #print("Graf nieskierowany - Cykl Hamiltona: średnio {}s , odchylenie {}s".format(srednia(NS_Hamilton), odchylenie(NS_Hamilton)))
         #print("Graf nieskierowany - Cykl Eulera: średnio {}s , odchylenie {}s".format(srednia(NS_Euler), odchylenie(NS_Euler)))
