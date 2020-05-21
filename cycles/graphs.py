@@ -186,7 +186,7 @@ class SuccessorList(Graph):
             return False
         hamiltonianCycle(start_node)
         if len(stack) == size - 1:
-            return [start_node] + stack[::-1] + [start_node]
+            return "Cykl Hamiltona: {}".format([start_node] + stack[::-1] + [start_node])
         else:
             return "Graf wejściowy nie zawiera cyklu Hamiltona."
         return "Cykl Hamiltona: {}".format(stack)
