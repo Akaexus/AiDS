@@ -24,4 +24,9 @@ string="""5 7
 
 xd = Knapsack.load(string)
 print(xd)
+print('\n\nBRUTALFORCE')
+print(Knapsack.printBackpack(xd.brutalforce()))
+print('\n\nGREEDY')
+print(Knapsack.printBackpack(xd.greedyAlgorithm()))
+print('\n\nDYNAMIC')
 print(Knapsack.printBackpack(xd.dynamicAlgorithm()))
