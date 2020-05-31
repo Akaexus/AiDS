@@ -1,7 +1,7 @@
 from knapsack import *
 
 
-def wprowadzenie_cyfry(tekst='', min=0, max=10000000):
+def wprowadzenie_cyfry(tekst='', min, max):
     n = input(tekst)
     if n.isnumeric() and min <= int(n) <= max:
         return n
@@ -40,7 +40,7 @@ while True:
           "[1] Algorytm programowania dynamicznego APD. \n"
           "[2] Algorytm zachłanny AZ (współczynnik opłacalności). \n"
           "[3] Algorytm wyczerpujący AW. \n"
-          "[4] Wyjście")
+          "[4] Wyjście.")
     n = wprowadzenie_cyfry("Wybór: ", 1, 4)
     if n == "1":
         print("\nAlgorytm programowania dynamicznego APD.")
@@ -49,7 +49,7 @@ while True:
         print("\nAlgorytm zachłanny AZ (współczynnik opłacalności).")
         print(Knapsack.printBackpack(plecaczek.greedyAlgorithm()))
     if n == "3":
-        print("\nAlgorytm wyczerpujący AW")
+        print("\nAlgorytm wyczerpujący AW.")
         print(Knapsack.printBackpack(plecaczek.brutalforce()))
     if n == "4":
         break
