@@ -1,7 +1,7 @@
 from knapsack import *
 
 
-def wprowadzenie_cyfry(tekst='', min, max):
+def wprowadzenie_cyfry(tekst='', min=0, max=10000000):
     n = input(tekst)
     if n.isnumeric() and min <= int(n) <= max:
         return n
@@ -11,11 +11,15 @@ def wprowadzenie_cyfry(tekst='', min, max):
 
 def wprowadzanie_2_cyfr(tekst=''):
     para = input(tekst).split()
-    if para[0].isnumeric() and para[1].isnumeric():
-        return int(para[0]), int(para[1])
-    else:
-        print("Wprowadź poprawne dane!")
+    if para == []:
+        print("Wprowadź jakiekolwiek dane!")
         return wprowadzanie_2_cyfr(tekst)
+    else:
+        if para[0].isnumeric() and para[1].isnumeric():
+            return int(para[0]), int(para[1])
+        else:
+            print("Wprowadź poprawne dane!")
+            return wprowadzanie_2_cyfr(tekst)
 
 
 print("[1] Wprowadź dane z klawiatury.\n"
@@ -40,7 +44,7 @@ while True:
           "[1] Algorytm programowania dynamicznego APD. \n"
           "[2] Algorytm zachłanny AZ (współczynnik opłacalności). \n"
           "[3] Algorytm wyczerpujący AW. \n"
-          "[4] Wyjście.")
+          "[4] Wyjście")
     n = wprowadzenie_cyfry("Wybór: ", 1, 4)
     if n == "1":
         print("\nAlgorytm programowania dynamicznego APD.")
@@ -49,7 +53,7 @@ while True:
         print("\nAlgorytm zachłanny AZ (współczynnik opłacalności).")
         print(Knapsack.printBackpack(plecaczek.greedyAlgorithm()))
     if n == "3":
-        print("\nAlgorytm wyczerpujący AW.")
+        print("\nAlgorytm wyczerpujący AW")
         print(Knapsack.printBackpack(plecaczek.brutalforce()))
     if n == "4":
         break
