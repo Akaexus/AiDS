@@ -30,7 +30,7 @@ if n == "1":
     n, b = wprowadzanie_2_cyfr("Wprowadź liczbę przedmiotów i pojemność plecaka: ")
     input_string += "{} {}".format(n, b)
     for i in range(n):
-        r, w = wprowadzanie_2_cyfr("Wprowadź parę nr {}: ".format(i+1))
+        r, w = wprowadzanie_2_cyfr("Wprowadź rozmiar i wartość przedmiotu nr {}: ".format(i+1))
         input_string += "\n" + "{} {}".format(r, w)
 
 elif n == "2":
